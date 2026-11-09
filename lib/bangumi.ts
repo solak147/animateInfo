@@ -98,6 +98,7 @@ async function request(path: string, revalidate = 3600) {
   const contact = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   return fetch(`${endpoint}${path}`, {
     headers: { Accept: "application/json", "User-Agent": process.env.BANGUMI_USER_AGENT || `AnimeSeasonRadar/1.0 (${contact})` },
+    signal: AbortSignal.timeout(8000),
     next: { revalidate },
   });
 }
@@ -110,21 +111,13 @@ export async function getSeasonAnime(year?: number, season?: string): Promise<An
   if (!Number.isInteger(selectedYear) || selectedYear < 1960 || selectedYear > current.year || !months) return [];
   try {
     const monthly = await Promise.all(months.map(async month => {
-      const subjects: BangumiSubject[] = [];
-      let offset = 0;
-      let total = 0;
-      do {
-        const params = new URLSearchParams({ type: "2", year: String(selectedYear), month: String(month), sort: "rank", limit: "100", offset: String(offset) });
-        const response = await request(`/subjects?${params}`, 86400);
-        if (!response.ok) throw new Error(`Bangumi returned ${response.status}`);
-        const result = await response.json();
-        const page = Array.isArray(result.data) ? result.data as BangumiSubject[] : [];
-        subjects.push(...page);
-        total = typeof result.total === "number" ? result.total : subjects.length;
-        offset += page.length;
-        if (!page.length) break;
-      } while (offset < total);
-      return subjects;
+      // One ranked page per month is enough to build a useful seasonal index,
+      // and avoids walking large result sets during a server render.
+      const params = new URLSearchParams({ type: "2", year: String(selectedYear), month: String(month), sort: "rank", limit: "100", offset: "0" });
+      const response = await request(`/subjects?${params}`, 86400);
+      if (!response.ok) throw new Error(`Bangumi returned ${response.status}`);
+      const result = await response.json();
+      return Array.isArray(result.data) ? result.data as BangumiSubject[] : [];
     }));
     const unique = new Map<number, BangumiSubject>();
     for (const subject of monthly.flat()) if (subject?.id) unique.set(subject.id, subject);

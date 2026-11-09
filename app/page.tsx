@@ -6,7 +6,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-export const revalidate = 3600;
+// Fetch Bangumi data during the request, not during Vercel's static build.
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const anime = await getSeasonAnime();
