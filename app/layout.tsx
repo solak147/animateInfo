@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   title: { default: "新番雷達｜每季動畫新番整理與追番指南", template: "%s｜新番雷達" },
   description: "每季新番動畫一覽、播出時間、作品介紹與追番指南。快速找到值得看的新番，掌握本季動畫情報。",
+  other: { "google-adsense-account": "ca-pub-7750788533596067" },
   openGraph: { type: "website", locale: "zh_TW", siteName: "新番雷達", title: "新番雷達｜每季動畫新番整理與追番指南", description: "每季新番動畫一覽、播出時間、作品介紹與追番指南。" },
   twitter: { card: "summary_large_image" },
 };
