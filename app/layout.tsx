@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="zh-Hant"><body>{children}<Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7750788533596067" crossOrigin="anonymous" strategy="afterInteractive" /></body></html>;
+  return <html lang="zh-Hant"><body>{children}<Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7750788533596067" crossOrigin="anonymous" strategy="beforeInteractive" /></body></html>;
 }
